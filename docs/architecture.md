@@ -42,8 +42,8 @@ js/config.js                Supabase URL 與 publishable key
 - 所有人加入同一個 channel `lobby`。
 - 訊息:Broadcast `{nickname, text, ts}`,包含自己都從廣播收到後才渲染。
 - 名單:每人 `track({nickname, joinedAt})`;排序依 `joinedAt`。
-- 代號唯一:`join` 時先看目前名單,已被使用就拒絕。已知限制:兩人同一瞬間搶同一代號可能都成功,因為沒有後端能做原子檢查;後加入者發現衝突就退回進入頁,降低機率但不保證。
-- 重新整理自動回到聊天室:代號存在 `sessionStorage`,離開時清除。若重連時代號已被別人占用,退回進入頁。
+- 代號唯一:`join` 時先看目前名單,已被使用就拒絕。但新登記的名字要約 2.3 秒(實測)才會傳到其他人那邊,所以登記自己後會再等 3 秒讓名單穩定,然後再檢查一次:同名時最早加入的留下,另一方退出並回到進入頁。這讓「兩人同時搶同一代號」也只有一人成功,代價是進入聊天室要多等約 3 秒。
+- 重新整理自動回到聊天室:代號存在 `sessionStorage`,離開時清除。重新整理時伺服器可能還留著舊分頁的殘影,所以代號被占用時會每 1.5 秒重試、最多 8 次,仍不行才退回進入頁。
 - 斷線:Presence 會在數秒內自動移出名單。自動重連,頂部顯示狀態。
 
 ## 防濫用(前端,可被繞過)
@@ -65,4 +65,4 @@ js/config.js                Supabase URL 與 publishable key
 ## 階段
 
 1. **階段一:前端。** 用 `/design` 定風格、`/frontend-design` 實作,接 mock,部署到 GitHub Pages。
-2. **階段二:接 Supabase。** 建立 Project、實作 `transport-supabase.js`、填 `config.js`、重新部署並實測。
+2. **階段二:接 Supabase(已完成)。** 程式庫用 CDN 載入 `@supabase/supabase-js@2.117.2`。 建立 Project、實作 `transport-supabase.js`、填 `config.js`、重新部署並實測。

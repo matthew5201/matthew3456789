@@ -1,5 +1,4 @@
-// 啟動與串接。階段二只需要把下面這一行換成 transport-supabase.js。
-import { createMockTransport } from './transport-mock.js';
+// 啟動與串接。預設連 Supabase;網址加 ?mock 則改用本機模擬(開發與測試用)。
 import { ERR_NICKNAME_TAKEN } from './transport.js';
 import * as ui from './ui.js';
 import {
@@ -7,7 +6,10 @@ import {
   ERR_NICK_TAKEN, ERR_TOO_FAST,
 } from './chat.js';
 
-const transport = createMockTransport();
+const params = new URLSearchParams(location.search);
+const transport = params.has('mock')
+  ? (await import('./transport-mock.js')).createMockTransport()
+  : (await import('./transport-supabase.js')).createSupabaseTransport();
 
 const SESSION_KEY = 'yeyu.nick';
 const BASE_TITLE = '夜語';
@@ -94,20 +96,28 @@ document.addEventListener('visibilitychange', () => {
 
 ui.init({ onEnter: enter, onSend: send, onLeave: leave });
 
-// 重新整理或重新連線時,沿用原代號直接回到聊天室;若代號已被占用就留在進入頁
-const saved = session.get();
-if (!saved) {
-  ui.showEntry();
-} else {
-  document.getElementById('entry').hidden = true; // 避免進入頁閃一下
+// 重新整理時沿用原代號直接回到聊天室。
+// 伺服器可能還留著舊分頁的「殘影」(幾秒內才會消失),所以代號被占用時先等一下再試,
+// 幾次都不行才放棄、請使用者換一個。
+const RESUME_TRIES = 8;
+const RESUME_WAIT_MS = 1500;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  enter(saved).then((result) => {
-    if (!result.ok) {
-      session.clear();
-      ui.showEntry({ error: `原本的代號「${saved}」無法使用,請換一個` });
-    }
-  });
+async function resume(nickname) {
+  ui.showEntryPending('正在回到聊天室…');
+  for (let i = 0; i < RESUME_TRIES; i++) {
+    const result = await enter(nickname);
+    if (result.ok) return;
+    if (result.error !== ERR_NICK_TAKEN) break;
+    await sleep(RESUME_WAIT_MS);
+  }
+  session.clear();
+  ui.showEntry({ error: `原本的代號「${nickname}」無法使用,請換一個` });
 }
 
+const saved = session.get();
+if (saved) resume(saved);
+else ui.showEntry();
+
 // 測試用:網址加 ?debug 後,可在主控台呼叫 __transport.simulateDisconnect()
-if (new URLSearchParams(location.search).has('debug')) window.__transport = transport;
+if (params.has('debug')) window.__transport = transport;

@@ -26,8 +26,20 @@ export function showEntry({ error = '' } = {}) {
   el.nick.value = '';
   updateNickCount();
   setEntryError(error);
+  el.enterBtn.textContent = '進入夜語';
   el.enterBtn.disabled = false;
   el.nick.focus();
+}
+
+// 重新整理後自動回到聊天室的等待畫面:顯示進入頁,但先不讓人操作
+export function showEntryPending(text) {
+  el.room.hidden = true;
+  el.entry.hidden = false;
+  el.nick.value = '';
+  updateNickCount();
+  setEntryError('');
+  el.nickMsg.textContent = text;
+  el.enterBtn.disabled = true;
 }
 
 function setEntryError(message) {
@@ -221,8 +233,11 @@ export function init(handlers) {
   el.entryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     el.enterBtn.disabled = true;
+    const label = el.enterBtn.textContent;
+    el.enterBtn.textContent = '進入中…';
     const result = await handlers.onEnter(el.nick.value);
     if (!result.ok) {
+      el.enterBtn.textContent = label;
       el.enterBtn.disabled = false;
       setEntryError(result.error);
       el.nick.focus();
