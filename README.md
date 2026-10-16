@@ -18,7 +18,7 @@
 | 項目 | 選擇 |
 |---|---|
 | 前端 | 純 HTML、CSS、JavaScript(ES modules),沒有框架,沒有建置步驟 |
-| 即時傳訊 | Supabase Realtime(WebSocket):訊息用 Broadcast,線上名單用 Presence |
+| 即時傳訊 | Supabase Realtime(WebSocket):訊息用 Broadcast,線上名單用 Presence。程式庫 `supabase-js` 2.117.2 放在 `vendor/`,不依賴外部 CDN |
 | 資料庫 | 不使用(沒有資料表,因為不保留歷史) |
 | 部署 | GitHub Pages,從 `main` 分支的根目錄發布 |
 
@@ -56,4 +56,5 @@ npm start       # 啟動 http://localhost:5173/
 | `docs/requirements.md` | 需求:使用者會看到什麼、做什麼 |
 | `docs/architecture.md` | 技術選擇與理由、檔案結構、資料流、Supabase 設定與金鑰 |
 | `docs/design.md` | 視覺風格、色碼、字體、每個畫面的規格 |
+| `vendor/README.md` | 第三方程式庫(supabase-js)的來源、版本與如何重新產生 |
 | `CLAUDE.md` | 給 AI 協作者的專案說明 |

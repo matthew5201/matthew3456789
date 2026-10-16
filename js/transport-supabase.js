@@ -1,6 +1,6 @@
 // 階段二的真傳輸:Supabase Realtime。介面見 transport.js。
 // 訊息走 Broadcast(不經資料庫,所以沒有歷史),線上名單走 Presence。
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm';
+import { createClient } from '../vendor/supabase-js.esm.js'; // supabase-js 2.117.2,見 vendor/README.md
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 import { createEmitter, transportError, ERR_NICKNAME_TAKEN, ERR_NOT_CONNECTED } from './transport.js';
 import { isNicknameTaken, NICK_MAX, MSG_MAX, countChars } from './chat.js';

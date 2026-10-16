@@ -7,7 +7,7 @@
 | 項目 | 選擇 | 理由 |
 |---|---|---|
 | 前端 | 純 HTML、CSS、JS(ES modules),無建置步驟 | 只有「進入」和「聊天」兩個畫面,用不到框架。GitHub Pages 直接發布。 |
-| 即時傳訊 | Supabase Realtime(WebSocket) | 使用者指定。 |
+| 即時傳訊 | Supabase Realtime(WebSocket),supabase-js 放在 `vendor/` | 使用者指定。程式庫放進 repo,不依賴外部 CDN。 |
 | 訊息 | Realtime **Broadcast** | 即時轉發,不經資料庫,所以天然沒有歷史。 |
 | 線上名單 | Realtime **Presence** | 自動追蹤加入、離開、斷線。 |
 | 資料庫 | 不使用 | 不保留歷史,不建任何資料表,也不需要 RLS。 |
@@ -25,6 +25,7 @@ js/transport.js             傳輸介面說明
 js/transport-mock.js        階段一:本地模擬
 js/transport-supabase.js    階段二:Supabase 實作
 js/config.js                Supabase URL 與 publishable key
+vendor/supabase-js.esm.js   supabase-js 2.117.2(打包好的單一檔案,見 vendor/README.md)
 ```
 
 ## 畫面清單
@@ -80,4 +81,4 @@ js/config.js                Supabase URL 與 publishable key
 ## 階段
 
 1. **階段一:前端。** 用 `/design` 定風格、`/frontend-design` 實作,接 mock,部署到 GitHub Pages。
-2. **階段二:接 Supabase(已完成)。** 程式庫用 CDN 載入 `@supabase/supabase-js@2.117.2`。 建立 Project、實作 `transport-supabase.js`、填 `config.js`、重新部署並實測。
+2. **階段二:接 Supabase(已完成)。** 程式庫 `@supabase/supabase-js@2.117.2` 打包成單一檔案放在 `vendor/`,不依賴外部 CDN,整個網站完全由這個 repo 的內容組成。 建立 Project、實作 `transport-supabase.js`、填 `config.js`、重新部署並實測。
