@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#22101C">
+<title>夜語</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-leave" viewBox="0 0 24 24"><path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H9"/><path d="M16 8l4 4-4 4"/><path d="M20 12H9"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></symbol>
+</svg>
+
+<!-- 進入頁 -->
+<main id="entry" class="entry">
+  <svg class="icon entry__heart" aria-hidden="true"><use href="#i-heart"/></svg>
+  <h1 class="entry__title">夜語</h1>
+  <p class="entry__sub">whispers under one moon</p>
+  <p class="entry__lead">不必登入,不留痕跡。<br>取一個代號,走進這間夜裡的房。</p>
+
+  <form id="entry-form" class="entry__form" novalidate>
+    <label for="nick" class="entry__label">你的代號</label>
+    <input id="nick" name="nick" class="field" type="text" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="nick-msg">
+    <div class="entry__meta">
+      <span id="nick-msg" class="entry__msg" role="alert"></span>
+      <span id="nick-count" class="entry__count">0 / 12</span>
+    </div>
+    <button type="submit" id="enter-btn" class="btn btn--primary">進入夜語</button>
+  </form>
+
+  <p class="entry__foot">訊息不會被保存,離開後就消失了。</p>
+</main>
+
+<!-- 聊天室 -->
+<div id="room" class="room" hidden>
+  <div id="status" class="status" role="status" hidden>連線中斷,重新連線中…</div>
+
+  <div class="room__body">
+    <section class="chat">
+      <header class="chat__bar">
+        <svg class="icon icon--rose" aria-hidden="true"><use href="#i-heart"/></svg>
+        <span class="chat__brand">夜語</span>
+        <span class="chat__tagline">whispers under one moon</span>
+        <span class="chat__who">你是 <span id="me-name" class="chat__me"></span></span>
+        <button type="button" id="roster-open" class="pill-btn chat__roster-btn">
+          <span class="dot" aria-hidden="true"></span><span id="online-count">0 人在線</span>
+        </button>
+        <button type="button" id="leave-btn" class="icon-btn chat__leave" aria-label="離開聊天室">
+          <svg class="icon" aria-hidden="true"><use href="#i-leave"/></svg><span class="chat__leave-text">離開</span>
+        </button>
+      </header>
+
+      <div class="chat__log-wrap">
+        <div id="log" class="log" role="log" aria-live="polite" aria-label="聊天訊息" tabindex="0"></div>
+        <button type="button" id="jump" class="jump" hidden>有新訊息 ↓</button>
+      </div>
+
+      <form id="composer" class="composer" novalidate>
+        <div class="composer__row">
+          <label for="msg" class="sr-only">訊息</label>
+          <textarea id="msg" class="field field--msg" rows="1" autocomplete="off"></textarea>
+          <button type="submit" class="send" aria-label="送出">
+            <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
+          </button>
+        </div>
+        <div class="composer__meta">
+          <span id="hint" class="composer__hint" role="status"></span>
+          <span id="msg-count" class="composer__count">0 / 500</span>
+        </div>
+      </form>
+    </section>
+
+    <aside id="roster" class="roster" aria-label="線上名單">
+      <div class="roster__head">
+        <h2 class="roster__title">線上名單</h2>
+        <span id="roster-count" class="tag">0 人</span>
+        <button type="button" id="roster-close" class="icon-btn roster__close" aria-label="關閉名單">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <ul id="roster-list" class="roster__list"></ul>
+      <p class="roster__note">依加入先後排列。</p>
+      <button type="button" id="roster-leave" class="btn btn--ghost roster__leave">
+        <svg class="icon" aria-hidden="true"><use href="#i-leave"/></svg>離開聊天室
+      </button>
+    </aside>
+
+    <div id="backdrop" class="backdrop" hidden></div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
